@@ -3,7 +3,7 @@ const router=express.Router();
 // const {isAuth,isAdmin}=require('../until')
 const foodController=require('../controllers/food.controller');
 const { isAuth, isAdmin } = require('../utils/auth');
-router.get('/',isAuth,foodController.getAllFood)
+router.get('/',isAuth,foodController.getFoodByPaginationAndCategory)
 router.post('/create',isAdmin,foodController.createFood)
 
 

@@ -32,14 +32,14 @@ const login = async (infoUser) => {
   const user = await userSchema.findOne({ username });
   if (user) {
     const res = await bcrypt.compare(password, user.password);
-    if(res){
-        return user
-    }
-    else{
-        return false    
+    if (res) {
+      return user;
+    } else {
+      return false;
     }
   } else {
     return false;
   }
 };
+
 module.exports = { register, login };

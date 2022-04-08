@@ -18,8 +18,10 @@ app.use(express.json());
 // route
 const user = require("./routes/user.route");
 const food = require("./routes/food.route");
+const category = require("./routes/category.route");
 app.use('/api/auth', user);
 app.use('/api/food', food);
+app.use('/api/category', category);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));

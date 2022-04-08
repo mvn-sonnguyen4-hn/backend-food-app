@@ -20,6 +20,11 @@ const FoodSchema = mongoose.Schema({
     type: String,
     required: false,
   },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required:true
+  },
   status: { type: String, default: "processing" },
   createdAt: { type: Date, default: Date.now },
   updateAt: { type: Date, default: Date.now },

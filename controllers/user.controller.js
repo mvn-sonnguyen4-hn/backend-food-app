@@ -1,5 +1,6 @@
 const { login, register } = require("../services/auth");
 const jwt = require("jsonwebtoken");
+const userSchema = require("../models/user.model");
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -8,7 +9,6 @@ const loginUser = async (req, res) => {
     });
   }
   const user = await login({ username, password });
-  console.log(user);
   if (user) {
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "48h",
@@ -60,4 +60,38 @@ const registerUser = async (req, res) => {
   }
   return res.status(500).json({ msg: "Loi server" });
 };
-module.exports = { loginUser, registerUser };
+
+const autoLoginUser = async (req, res) => {
+  const token = req.headers?.authorization?.split(" ")[1];
+  if (token) {
+    try {
+      const result = jwt.verify(token, process.env.JWT_SECRET);
+      console.log(result);
+      if (!result) {
+        res.status(500).json({
+          msg: "Invalid token",
+        });
+      }
+      const user = await userSchema.findOne({ _id: result._id });
+      if (user) {
+        res.json({
+          user,
+          jwt: token,
+        });
+      } else {
+        res.status(500).json({
+          msg: "Invalid token",
+        });
+      }
+    } catch {
+      res.status(500).json({
+        msg: "Invalid token",
+      });
+    }
+  } else {
+    res.status(500).json({
+      msg: "Error",
+    });
+  }
+};
+module.exports = { loginUser, registerUser, autoLoginUser };
