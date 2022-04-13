@@ -14,6 +14,11 @@ const getAllCategories = async (req, res) => {
 const createCategory = async (req, res) => {
   const { name } = req.body;
   if (name) {
+    const oldCategory =await categorySchema.findOne({name})
+    if(oldCategory){
+      res.status(500).json({ msg: "Category existed" });
+      return;
+    }
     const newCategory = new categorySchema({
       name,
     });
@@ -21,10 +26,7 @@ const createCategory = async (req, res) => {
       if (err) {
         res.status(500).json({ msg: "Error" });
       } else {
-        res.json({
-          status: 200,
-          data,
-        });
+        res.status(200).json(data);
       }
     });
   }

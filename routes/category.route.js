@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const categoryController = require("../controllers/category.controller");
-const { isAdmin } = require("../utils/auth");
-router.get("/", isAdmin, categoryController.getAllCategories);
+const { isAdmin,isAuth } = require("../utils/auth");
+router.get("/", isAuth, categoryController.getAllCategories);
 
 router.post("/create", isAdmin, categoryController.createCategory);
 

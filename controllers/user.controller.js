@@ -66,7 +66,6 @@ const autoLoginUser = async (req, res) => {
   if (token) {
     try {
       const result = jwt.verify(token, process.env.JWT_SECRET);
-      console.log(result);
       if (!result) {
         res.status(500).json({
           msg: "Invalid token",

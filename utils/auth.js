@@ -22,22 +22,26 @@ const isAuth = (req, res, next) => {
 };
 
 const isAdmin = async (req, res, next) => {
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.split(" ")[0] === "Bearer"
-  ) {
-    const token = req?.headers?.authorization?.split(" ")[1];
-    if (token) {
-      const decode = jwt.verify(token, process.env.JWT_SECRET);
-      if (decode) {
+  const token = req.headers?.authorization?.split(" ")[1];
+  if (token) {
+    try {
+      jwt.verify(token, process.env.JWT_SECRET, async (err, decode) => {
+        if (err) {
+          return res.status(401).send({ message: "Invalid Token" });
+        }
         const user = await userSchema.findOne({ _id: decode._id });
         if (user && user.role === 0) {
-          return next();
+          next();
+        } else {
+          res.status(401).send({ message: "Yot are not admin" });
         }
-      }
+      });
+    } catch {
+      res.status(401).send({ message: "Invalid Token" });
     }
+  } else {
+    return res.status(401).send({ message: "Token is not supplied." });
   }
-  return res.status(500).json({ message: "You are not admin" });
 };
 
 module.exports = { getToken, isAuth, isAdmin };

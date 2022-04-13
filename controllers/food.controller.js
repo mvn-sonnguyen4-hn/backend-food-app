@@ -1,18 +1,32 @@
 const foodSchema = require("../models/food.model");
-const getFoodByPaginationAndCategory = (req, res) => {
-  foodSchema.find({}, (err, data) => {
-    if (err) {
-      res.json({
-        status: 500,
-        msg: "Error",
-      });
-    } else {
-      res.json({
-        status: 200,
-        data,
-      });
+const categorySchema = require("../models/category.model");
+const getFoodByPaginationAndCategory = async (req, res) => {
+  const { page = 1, limit = 10, type, keyword = "" } = req.query;
+  let search = {
+    name: { $regex: keyword, $options: "$i" },
+  };
+  if (type) {
+    const category = await categorySchema.findOne({ name: type });
+    if (category && category._id) {
+      search = { ...search, category: category._id };
     }
-  });
+  }
+  const listFood = await foodSchema
+    .find(search)
+    .skip((page - 1) * limit)
+    .limit(limit);
+  const totalFood = await foodSchema.find(search).countDocuments();
+  const totalPage = Math.ceil(totalFood / limit);
+  if (listFood.length) {
+    res.status(200).json({
+      data: listFood,
+      totalPage,
+      page,
+      limit,
+    });
+  } else {
+    res.status(500).json({ msg: "Error" });
+  }
 };
 
 const createFood = (req, res) => {
