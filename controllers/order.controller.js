@@ -17,17 +17,25 @@ const getOrderByUserId = async (req, res) => {
 };
 
 const createOrder = async (req, res) => {
-  const { user_id, list_orders } = req.body;
-  if (!user_id || (!list_orders && list_orders.length)) {
+  const { data } = req.body;
+  if (!req.user_id || !(data && data.length)) {
     res.status(500).json({ msg: "Error" });
     return;
   }
+  const foods = data.map((order) => {
+    return {
+      food: order.food,
+      amount: order.amount,
+      note: order?.note ?? "",
+    };
+  });
   const newOrder = new orderSchema({
-    user: user_id,
-    foods: list_orders,
+    user: req.user_id,
+    foods,
   });
   newOrder.save((err, data) => {
     if (err) {
+      console.log(err)
       res.status(500).json({ msg: "Error" });
     } else {
       res.json({
@@ -38,4 +46,4 @@ const createOrder = async (req, res) => {
   });
 };
 
-module.exports = { getOrderByUserId ,createOrder};
+module.exports = { getOrderByUserId, createOrder };

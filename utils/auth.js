@@ -12,7 +12,7 @@ const isAuth = (req, res, next) => {
       if (err) {
         return res.status(401).send({ message: "Invalid Token" });
       }
-      req.user = decode;
+      req.user_id = decode._id;
       next();
       return;
     });
@@ -31,6 +31,7 @@ const isAdmin = async (req, res, next) => {
         }
         const user = await userSchema.findOne({ _id: decode._id });
         if (user && user.role === 0) {
+          req.user_id=decode._id
           next();
         } else {
           res.status(401).send({ message: "Yot are not admin" });
