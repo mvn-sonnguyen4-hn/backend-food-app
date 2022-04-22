@@ -20,6 +20,10 @@ const OrderSchema = mongoose.Schema({
       }
     },
   ],
+  status:{
+    type:String,
+    default:'Preparing'
+  },
   createdAt: { type: Date, default: Date.now },
   updateAt: { type: Date, default: Date.now },
 });

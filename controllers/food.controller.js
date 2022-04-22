@@ -1,31 +1,31 @@
 const foodSchema = require("../models/food.model");
 const categorySchema = require("../models/category.model");
 const getFoodByPaginationAndCategory = async (req, res) => {
-  const { page = 1, limit = 10, type, keyword = "" } = req.query;
-  let search = {
-    name: { $regex: keyword, $options: "$i" },
-  };
-  if (type) {
-    const category = await categorySchema.findOne({ name: type });
-    if (category && category._id) {
-      search = { ...search, category: category._id };
+  try {
+    const { page = 1, limit = 10, type, keyword = "" } = req.query;
+    let search = {
+      name: { $regex: keyword, $options: "$i" },
+    };
+    if (type) {
+      const category = await categorySchema.findOne({ name: type });
+      if (category && category._id) {
+        search = { ...search, category: category._id };
+      }
     }
-  }
-  const listFood = await foodSchema
-    .find(search)
-    .skip((page - 1) * limit)
-    .limit(limit);
-  const totalFood = await foodSchema.find(search).countDocuments();
-  const totalPage = Math.ceil(totalFood / limit);
-  if (listFood.length) {
+    const listFood = await foodSchema
+      .find(search)
+      .skip((page - 1) * limit)
+      .limit(limit);
+    const totalFood = await foodSchema.find(search).countDocuments();
+    const totalPage = Math.ceil(totalFood / limit);
     res.status(200).json({
       data: listFood,
       totalPage,
       page,
       limit,
     });
-  } else {
-    res.status(500).json({ msg: "Error" });
+  } catch {
+    res.status(500).json({ msg: "Err" });
   }
 };
 
