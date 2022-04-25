@@ -4,6 +4,7 @@ const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const multer = require('multer')
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -11,9 +12,14 @@ const db = require("./config/db");
 db.connect();
 app.use(cors());
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true }));
 app.use(bodyParser.json());
-app.use(express.json());
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
+
+const upload = multer({
+  storage: multer.memoryStorage()
+})
 
 // route
 const user = require("./routes/user.route");

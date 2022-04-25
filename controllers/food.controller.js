@@ -1,5 +1,8 @@
 const foodSchema = require("../models/food.model");
 const categorySchema = require("../models/category.model");
+const { streamUpload } = require("../utils/upload");
+
+// get food
 const getFoodByPaginationAndCategory = async (req, res) => {
   try {
     const { page = 1, limit = 10, type, keyword = "" } = req.query;
@@ -29,9 +32,14 @@ const getFoodByPaginationAndCategory = async (req, res) => {
   }
 };
 
-const createFood = (req, res) => {
-  const { name, price, url_img, description, avaiable, category_id } = req.body;
-  if ((!name, !price, !url_img, description, !avaiable, !category_id)) {
+// create food
+const createFood = async (req, res) => {
+  const result = await streamUpload(req);
+  if (!result) {
+    return res.status(500).json({ msg: "Err" });
+  }
+  const { name, price, description, avaiable, category_id } = req.body;
+  if (!name || !price || !avaiable || !category_id) {
     res.json({
       status: 500,
       msg: "Error",
@@ -41,7 +49,7 @@ const createFood = (req, res) => {
     const newFood = new foodSchema({
       name,
       price,
-      url_img,
+      url_img: result.url,
       description,
       avaiable,
       category: category_id,
@@ -66,4 +74,5 @@ const createFood = (req, res) => {
     });
   }
 };
+
 module.exports = { getFoodByPaginationAndCategory, createFood };

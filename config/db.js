@@ -11,4 +11,8 @@ async function connect() {
     console.log("Connect fail");
   }
 }
-module.exports = { connect, mongoURI: process.env.MONGO_URI };
+
+module.exports = {
+  connect,
+  mongoURI: process.env.MONGO_URI,
+};

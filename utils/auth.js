@@ -34,7 +34,7 @@ const isAdmin = async (req, res, next) => {
           req.user_id=decode._id
           next();
         } else {
-          res.status(401).send({ message: "Yot are not admin" });
+          res.status(401).send({ message: "You are not admin" });
         }
       });
     } catch {

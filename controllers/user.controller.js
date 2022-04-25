@@ -53,6 +53,7 @@ const registerUser = async (req, res) => {
     return res.json({
       jwt: token,
       user,
+      expiresAt: new Date(Date.now() + 3 * 60 * 60 * 60 * 1000),
     });
   }
   if (user === 0) {
