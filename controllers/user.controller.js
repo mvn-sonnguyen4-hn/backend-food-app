@@ -94,4 +94,36 @@ const autoLoginUser = async (req, res) => {
     });
   }
 };
-module.exports = { loginUser, registerUser, autoLoginUser };
+
+const updateUser = async (req, res) => {
+  try {
+    const {
+      username,
+      email,
+      address,
+      avatar_url,
+      phonenumber,
+      first_name,
+      last_name,
+    } = req.body;
+    const user = await userSchema.updateOne(
+      { _id: req.user_id },
+      {
+        username,
+        email,
+        avatar_url,
+        address,
+        phonenumber,
+        first_name,
+        last_name,
+      },
+      { upsert: true }
+    );
+    return res.status(200).json({ user });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ msg: "Err" });
+  }
+};
+
+module.exports = { loginUser, registerUser, autoLoginUser, updateUser };
