@@ -7,7 +7,7 @@ const upload = multer({ storage: storage }).single('file');
 // const {isAuth,isAdmin}=require('../until')
 const foodController=require('../controllers/food.controller');
 const { isAuth, isAdmin } = require('../utils/auth');
-router.get('/',isAuth,foodController.getFoodByPaginationAndCategory)
+router.get('/',foodController.getFoodByPaginationAndCategory)
 router.post('/create',upload,foodController.createFood)
 
 

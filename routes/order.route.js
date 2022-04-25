@@ -4,7 +4,7 @@ const orderController=require('../controllers/order.controller');
 const { isAuth, isAdmin } = require('../utils/auth');
 // user
 router.get('/:id',isAuth,orderController.getOrderById)
-router.post('/create',isAuth,orderController.createOrder)
+router.post('/create',orderController.createOrder)
 router.post('/delete',isAuth,orderController.deleteOrdersByUser)
 
 // admin
