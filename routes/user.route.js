@@ -1,12 +1,16 @@
-const express=require('express')
-const router=express.Router();
-const {isAuth}=require('../utils/auth')
-const userController=require('../controllers/user.controller')
-router.post('/register',userController.registerUser)
+const express = require("express");
+const router = express.Router();
+const { isAuth } = require("../utils/auth");
+const userController = require("../controllers/user.controller");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single("file");
 
-router.post('/login',userController.loginUser)
-router.post('/update',isAuth,userController.updateUser)
+router.post("/register", userController.registerUser);
 
-router.get('/auto-login',userController.autoLoginUser)
+router.post("/login", userController.loginUser);
+router.put("/update", isAuth, upload, userController.updateUser);
 
-module.exports=router
+router.get("/auto-login", userController.autoLoginUser);
+
+module.exports = router;

@@ -1,4 +1,5 @@
 const orderSchema = require("../models/order.model");
+const { pagination } = require("../utils/functions");
 
 // get all orders
 const getAllOrders = async (req, res) => {
@@ -6,7 +7,7 @@ const getAllOrders = async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const user_id = req.user_id;
     if (!user_id) {
-      res.status(500).json({ msg: "Error" });
+      res.status(400).json({ msg: "Not authorize" });
       return;
     }
     const orders = await orderSchema
@@ -32,34 +33,47 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-
 // get order by id
-const getOrderById = async (req, res) => {
+const getOrderByUserId = async (req, res) => {
   try {
-    const _id = req.params.id;
+    const total = await orderSchema
+      .find({ user: req.user_id })
+      .countDocuments();
+    const { status, page, totalPage } = pagination(
+      req.query.page ?? 1,
+      10,
+      total
+    );
+    if (status === 500) {
+      return res.status(status).json({ msg: "pagiantion is error" });
+    }
     const order = await orderSchema
-      .find({ user: _id })
+      .find({ user: req.user_id })
+      .skip((page - 1) * 10)
+      .limit(10)
+      .sort({ createdAt: -1 })
       .populate("foods.food")
       .populate("user");
     if (order) {
       res.json({
-        status: 200,
+        status: status,
         data: order,
+        page,
+        totalPage,
       });
     } else {
-      res.status(500).json({ msg: "Error" });
+      res.status(500).json({ msg: "not found order" });
     }
   } catch {
-    res.status(500).json({ msg: "Error" });
+    res.status(500).json({ msg: "Server wrong" });
   }
 };
 
 // create order
 const createOrder = async (req, res) => {
-  const { listFood, status } = req.body;
-  const user_id = req.user_id;
+  const { listFood, address, phonenumber, user_id } = req.body;
   if (!listFood.length) {
-    res.status(500).json({ msg: "Error" });
+    res.status(500).json({ msg: "Food is required" });
     return;
   }
   const foods = listFood.map((order) => {
@@ -70,14 +84,15 @@ const createOrder = async (req, res) => {
     };
   });
   const newOrder = new orderSchema({
-    user: user_id,
+    user: user_id || null,
     foods,
-    status,
+    address,
+    phonenumber,
   });
   newOrder.save((err, data) => {
     if (err) {
       console.log(err);
-      res.status(500).json({ msg: "Error" });
+      res.status(500).json({ msg: "Action is error" });
     } else {
       res.json({
         status: 200,
@@ -88,6 +103,7 @@ const createOrder = async (req, res) => {
 };
 
 // update order
+
 const updateOrder = async (req, res) => {
   const { _id, listFood, status } = req.body;
   if (!listFood.length) {
@@ -107,7 +123,6 @@ const updateOrder = async (req, res) => {
     order.status = status;
     order.save((err, data) => {
       if (err) {
-        console.log(err);
         res.status(500).json({ msg: "Error" });
       } else {
         res.json({
@@ -160,6 +175,6 @@ module.exports = {
   createOrder,
   updateOrder,
   deleteOrders,
-  getOrderById,
+  getOrderByUserId,
   deleteOrdersByUser,
 };

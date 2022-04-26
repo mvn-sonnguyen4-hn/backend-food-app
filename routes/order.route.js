@@ -1,14 +1,16 @@
-const express=require('express')
-const router=express.Router();
-const orderController=require('../controllers/order.controller');
-const { isAuth, isAdmin } = require('../utils/auth');
-// user
-router.get('/:id',isAuth,orderController.getOrderById)
-router.post('/create',orderController.createOrder)
-router.post('/delete',isAuth,orderController.deleteOrdersByUser)
+const express = require("express");
+const router = express.Router();
+const orderController = require("../controllers/order.controller");
+const { isAuth, isAdmin } = require("../utils/auth");
 
 // admin
-router.get('/admin',isAdmin,orderController.getAllOrders)
-router.put('/admin/update',isAuth,orderController.updateOrder)
-router.post('/admin/delete',isAuth,orderController.deleteOrders)
-module.exports=router
+router.get("/admin", isAdmin, orderController.getAllOrders);
+router.put("/admin/update", isAdmin, orderController.updateOrder);
+router.post("/admin/delete", isAdmin, orderController.deleteOrders);
+
+// user
+router.post("/create", orderController.createOrder);
+router.post("/update", isAuth, orderController.updateOrder);
+router.post("/delete", isAuth, orderController.deleteOrdersByUser);
+router.get("/user", isAuth, orderController.getOrderByUserId);
+module.exports = router;

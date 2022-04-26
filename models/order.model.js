@@ -14,21 +14,41 @@ const OrderSchema = mongoose.Schema({
         type: Number,
         required: true,
       },
-      note:{
-        type:String,
-        default:''
-      }
+      note: {
+        type: String,
+        default: "",
+      },
     },
   ],
-  status:{
+  status: {
+    type: String,
+    default: "Preparing",
+  },
+  address: {
+    type: String,
+    default: "",
+  },
+  phonenumber: {
+    type: String,
+    default: "",
+  },
+  method_payment:{
+    type:Number,
+    default:0
+  },
+  total_price:{
+    type:Number,
+    default:0
+  },
+  fullname:{
     type:String,
-    default:'Preparing'
+    default:''
   },
   createdAt: { type: Date, default: Date.now },
   updateAt: { type: Date, default: Date.now },
-  deleteAt:{
-    type:Date,
-    default:null
-  }
+  deleteAt: {
+    type: Date,
+    default: null,
+  },
 });
 const Order = (module.exports = mongoose.model("Order", OrderSchema));

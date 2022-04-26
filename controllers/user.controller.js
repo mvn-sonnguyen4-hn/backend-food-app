@@ -1,6 +1,8 @@
 const { login, register } = require("../services/auth");
 const jwt = require("jsonwebtoken");
 const userSchema = require("../models/user.model");
+const { streamUpload } = require("../utils/upload");
+
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -101,25 +103,28 @@ const updateUser = async (req, res) => {
       username,
       email,
       address,
-      avatar_url,
       phonenumber,
+      avatar_url,
       first_name,
       last_name,
     } = req.body;
-    const user = await userSchema.updateOne(
+    let result = "";
+    if (!avatar_url) {
+      result = await streamUpload(req);
+    }
+    const user = await userSchema.findOneAndUpdate(
       { _id: req.user_id },
       {
         username,
         email,
-        avatar_url,
         address,
+        avatar_url: avatar_url || result.url,
         phonenumber,
         first_name,
         last_name,
-      },
-      { upsert: true }
+      }, {new: true}
     );
-    return res.status(200).json({ user });
+    return res.status(200).json({ data:user });
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Err" });

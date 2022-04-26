@@ -1,5 +1,4 @@
 const { cloudinary } = require("../utils/cloudiary");
-const multer = require("multer");
 const streamifier = require("streamifier");
 const streamUpload =async (req) => {
   return new Promise((resolve, reject) => {
@@ -10,7 +9,6 @@ const streamUpload =async (req) => {
         reject(error);
       }
     });
-
     streamifier.createReadStream(req.file.buffer).pipe(stream);
   });
 };

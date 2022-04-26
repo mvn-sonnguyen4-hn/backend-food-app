@@ -75,4 +75,62 @@ const createFood = async (req, res) => {
   }
 };
 
-module.exports = { getFoodByPaginationAndCategory, createFood };
+// delete food
+const deleteFood = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const food = await foodSchema.findById(id);
+    if (!food) {
+      return res.status(500).json({ msg: "Not found" });
+    }
+    await food.remove();
+    res.status(200).json({ msg: "Success" });
+  } catch {
+    res.status(500).json({ msg: "Error" });
+  }
+};
+
+// update food
+const updateFood = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const food = await foodSchema.findById(id);
+    if (!food) {
+      return res.status(500).json({ msg: "Not found" });
+    }
+    const { name, price, description, avaiable, category_id, url_img } =
+      req.body;
+    let result = "";
+    if (!url_img) {
+      try{
+        result = await streamUpload(req);
+      }
+      catch(err){
+        return res.status(500).json({ msg: "Err" });
+      }
+      if (!result) {
+        return res.status(500).json({ msg: "Err" });
+      }
+    }
+    if (!name || !price || !avaiable || !category_id) {
+      return res.status(500).json({ msg: "Field is required" });
+    }
+    food.name = name;
+    food.price = price;
+    food.description = description;
+    food.avaiable = avaiable;
+    food.category = category_id;
+    food.url_img = url_img || result.url;
+    await food.save();
+    res.status(200).json({ data:food});
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+};
+
+module.exports = {
+  getFoodByPaginationAndCategory,
+  createFood,
+  updateFood,
+  deleteFood,
+};
