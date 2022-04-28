@@ -39,6 +39,14 @@ const getOrderByUserId = async (req, res) => {
     const total = await orderSchema
       .find({ user: req.user_id })
       .countDocuments();
+    if(total===0){
+      return res.json({
+        status: 200,
+        data: [],
+        page:0,
+        totalPage:0,
+      });
+    }
     const { status, page, totalPage } = pagination(
       req.query.page ?? 1,
       10,
@@ -71,7 +79,7 @@ const getOrderByUserId = async (req, res) => {
 
 // create order
 const createOrder = async (req, res) => {
-  const { listFood, address, phonenumber, user_id } = req.body;
+  const { listFood, address, phonenumber, user_id, fullname } = req.body;
   if (!listFood.length) {
     res.status(500).json({ msg: "Food is required" });
     return;
@@ -86,6 +94,7 @@ const createOrder = async (req, res) => {
   const newOrder = new orderSchema({
     user: user_id || null,
     foods,
+    fullname,
     address,
     phonenumber,
   });

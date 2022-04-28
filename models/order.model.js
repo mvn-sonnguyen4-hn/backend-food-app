@@ -44,6 +44,10 @@ const OrderSchema = mongoose.Schema({
     type:String,
     default:''
   },
+  email:{
+    type:String,
+    default:''
+  },
   createdAt: { type: Date, default: Date.now },
   updateAt: { type: Date, default: Date.now },
   deleteAt: {

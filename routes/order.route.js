@@ -10,7 +10,7 @@ router.post("/admin/delete", isAdmin, orderController.deleteOrders);
 
 // user
 router.post("/create", orderController.createOrder);
-router.post("/update", isAuth, orderController.updateOrder);
+router.put("/update", isAuth, orderController.updateOrder);
 router.post("/delete", isAuth, orderController.deleteOrdersByUser);
 router.get("/user", isAuth, orderController.getOrderByUserId);
 module.exports = router;
