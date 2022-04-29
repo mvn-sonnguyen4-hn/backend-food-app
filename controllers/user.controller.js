@@ -131,4 +131,14 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { loginUser, registerUser, autoLoginUser, updateUser };
+const getAdmin = async (req, res) => {
+  const user = await userSchema.findOne({ role:0 });
+  if (user) {
+    return res.json({
+      user,
+    });
+  }
+  return res.status(500).json({ msg: "Err" });
+}
+
+module.exports = { loginUser, registerUser, autoLoginUser, updateUser,getAdmin };

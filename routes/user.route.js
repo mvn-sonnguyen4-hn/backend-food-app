@@ -12,5 +12,6 @@ router.post("/login", userController.loginUser);
 router.put("/update", isAuth, upload, userController.updateUser);
 
 router.get("/auto-login", userController.autoLoginUser);
+router.get("/getAdmin", userController.getAdmin);
 
 module.exports = router;
