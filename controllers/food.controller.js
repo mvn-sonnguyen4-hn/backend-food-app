@@ -38,11 +38,11 @@ const createFood = async (req, res) => {
   if (!result) {
     return res.status(500).json({ msg: "Err" });
   }
-  const { name, price, description, avaiable, category_id } = req.body;
-  if (!name || !price || !avaiable || !category_id) {
+  const { name, price, description = "", category_id } = req.body;
+  if (!name || !price || !category_id) {
     res.json({
       status: 500,
-      msg: "Error",
+      msg: "Field is required",
     });
   }
   try {
@@ -51,14 +51,13 @@ const createFood = async (req, res) => {
       price,
       url_img: result.url,
       description,
-      avaiable,
       category: category_id,
     });
     newFood.save((err, data) => {
       if (err) {
         res.json({
           status: 500,
-          msg: "Error",
+          msg: "Error when save file",
         });
       } else {
         res.json({
@@ -67,10 +66,10 @@ const createFood = async (req, res) => {
         });
       }
     });
-  } catch {
+  } catch (err) {
     res.json({
       status: 500,
-      msg: "Error",
+      msg: "Server error",
     });
   }
 };
@@ -102,10 +101,9 @@ const updateFood = async (req, res) => {
       req.body;
     let result = "";
     if (!url_img) {
-      try{
+      try {
         result = await streamUpload(req);
-      }
-      catch(err){
+      } catch (err) {
         return res.status(500).json({ msg: "Err" });
       }
       if (!result) {
@@ -122,7 +120,7 @@ const updateFood = async (req, res) => {
     food.category = category_id;
     food.url_img = url_img || result.url;
     await food.save();
-    res.status(200).json({ data:food});
+    res.status(200).json({ data: food });
   } catch (err) {
     res.status(500).json({ msg: err });
   }

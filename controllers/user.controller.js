@@ -100,7 +100,6 @@ const autoLoginUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const {
-      username,
       email,
       address,
       phonenumber,
@@ -115,7 +114,6 @@ const updateUser = async (req, res) => {
     const user = await userSchema.findOneAndUpdate(
       { _id: req.user_id },
       {
-        username,
         email,
         address,
         avatar_url: avatar_url || result.url,
