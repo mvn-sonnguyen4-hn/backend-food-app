@@ -38,4 +38,34 @@ const createCategory = async (req, res) => {
   }
 };
 
-module.exports = { getAllCategories, createCategory };
+const updateCategory = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const { id } = req.params;
+    if (name && id) {
+      await categorySchema.findOneAndUpdate({ _id: id }, { name });
+    }
+    return res.status(200).json({ msg: "Success" });
+  } catch (err) {
+    res.status(500).json({ msg: new Error(err).message });
+  }
+};
+
+const deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (id) {
+      await categorySchema.findOneAndDelete({ _id: id });
+    }
+    return res.status(200).json({ msg: "Success" });
+  } catch (err) {
+    res.status(500).json({ msg: new Error(err).message });
+  }
+};
+
+module.exports = {
+  getAllCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+};

@@ -77,12 +77,12 @@ const createFood = async (req, res) => {
 // delete food
 const deleteFood = async (req, res) => {
   try {
-    const { id } = req.params;
-    const food = await foodSchema.findById(id);
-    if (!food) {
-      return res.status(500).json({ msg: "Not found" });
-    }
-    await food.remove();
+    const { ids } = req.body;
+    await foodSchema.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    });
     res.status(200).json({ msg: "Success" });
   } catch {
     res.status(500).json({ msg: "Error" });
@@ -92,26 +92,26 @@ const deleteFood = async (req, res) => {
 // update food
 const updateFood = async (req, res) => {
   try {
+    const { name, price, description, avaiable, category_id, url_img } =
+      req.body;
+    if (!name || !price || !category_id) {
+      return res.status(500).json({ msg: "Field is required" });
+    }
     const { id } = req.params;
     const food = await foodSchema.findById(id);
     if (!food) {
       return res.status(500).json({ msg: "Not found" });
     }
-    const { name, price, description, avaiable, category_id, url_img } =
-      req.body;
     let result = "";
     if (!url_img) {
       try {
         result = await streamUpload(req);
       } catch (err) {
-        return res.status(500).json({ msg: "Err" });
+        return res.status(500).json({ msg: err });
       }
       if (!result) {
-        return res.status(500).json({ msg: "Err" });
+        return res.status(500).json({ msg: "Server is err" });
       }
-    }
-    if (!name || !price || !avaiable || !category_id) {
-      return res.status(500).json({ msg: "Field is required" });
     }
     food.name = name;
     food.price = price;
