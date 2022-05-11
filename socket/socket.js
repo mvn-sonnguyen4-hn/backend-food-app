@@ -4,6 +4,7 @@ const io = require("socket.io")(8900, {
   },
 });
 const roomSchema = require("../models/room.model");
+const messageSchema = require("../models/message.model");
 let users = [];
 
 const addUser = (userId, socketId) => {
@@ -20,7 +21,7 @@ const getUser = (userId) => {
 };
 
 io.on("connection", (socket) => {
-  //when ceonnect
+  //when connect
   console.log("a user connected.");
 
   //take userId and socketId from user
@@ -43,11 +44,13 @@ io.on("connection", (socket) => {
           last_message: text
         })
       }
-      room.messages.push({
-        senderId,
-        receiverId,
-        text,
+      const message = await messageSchema.create({
+        from: senderId,
+        to: receiverId,
+        content: text,
       })
+
+      room.messages.push(message)
       messages.last_message = text;
       await room.save();
     }
@@ -55,6 +58,7 @@ io.on("connection", (socket) => {
       senderId,
       receiverId,
       text,
+      createAt: Date.now(),
     });
   });
 
