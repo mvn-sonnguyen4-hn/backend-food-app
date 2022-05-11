@@ -3,7 +3,7 @@ const io = require("socket.io")(8900, {
     origin: "http://localhost:5000",
   },
 });
-
+const roomSchema = require("../models/room.model");
 let users = [];
 
 const addUser = (userId, socketId) => {
@@ -30,10 +30,30 @@ io.on("connection", (socket) => {
   });
 
   //send and get message
-  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+  socket.on("sendMessage", ({ senderId, receiverId, text, user }) => {
     const user = getUser(receiverId);
+    if (user) {
+      let room = await roomSchema.findOne ({
+        messages: { $all: [senderId, receiverId] },
+      });
+      if(!room){
+        room = await roomSchema.create({
+          users: [senderId, receiverId],
+          messages: [],
+          last_message: text
+        })
+      }
+      room.messages.push({
+        senderId,
+        receiverId,
+        text,
+      })
+      messages.last_message = text;
+      await room.save();
+    }
     io.to(user.socketId).emit("getMessage", {
       senderId,
+      receiverId,
       text,
     });
   });
