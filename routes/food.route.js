@@ -9,7 +9,7 @@ const foodController = require("../controllers/food.controller");
 const { isAuth, isAdmin } = require("../utils/auth");
 router.get("/", foodController.getFoodByPaginationAndCategory);
 router.post("/create", isAdmin, upload, foodController.createFood);
-router.post("/update/:id", isAdmin, uploadForUpdate, foodController.updateFood);
+router.put("/update/:id", isAdmin, uploadForUpdate, foodController.updateFood);
 router.delete("/delete", isAdmin, foodController.deleteFood);
 
 module.exports = router;
