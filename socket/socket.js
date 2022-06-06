@@ -23,7 +23,9 @@ const getUser = (userId) => {
 io.on("connection", (socket) => {
   //when connect
   console.log("a user connected.");
-
+  socket.on("join", function (room) {
+    socket.join(room);
+  });
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
@@ -31,33 +33,34 @@ io.on("connection", (socket) => {
   });
 
   //send and get message
-  socket.on("sendMessage", ({ senderId, receiverId, text, user }) => {
-    const user = getUser(receiverId);
-    if (user) {
-      let room = await roomSchema.findOne ({
-        messages: { $all: [senderId, receiverId] },
-      });
-      if(!room){
-        room = await roomSchema.create({
-          users: [senderId, receiverId],
-          messages: [],
-          last_message: text
-        })
+  socket.on("sendMessage", async (data) => {
+    let { from, to, content } = data;
+    user = getUser(from);
+    try {
+      if (user) {
+        let room = await roomSchema.findOne({}).all("users", [from, to]);
+        console.log()
+        if (!room) {
+          room = await roomSchema.create({
+            users: [from, to],
+            messages: [],
+          });
+        }
+        const message = await messageSchema.create({
+          from: from,
+          to: to,
+          content,
+        });
+        room.messages.push({ message });
+        await room.save();
       }
-      const message = await messageSchema.create({
-        from: senderId,
-        to: receiverId,
-        content: text,
-      })
-
-      room.messages.push(message)
-      messages.last_message = text;
-      await room.save();
+    } catch (err) {
+      console.log(new Error(err).message);
     }
-    io.to(user.socketId).emit("getMessage", {
-      senderId,
-      receiverId,
-      text,
+    io.to(to).emit("getMessage", {
+      from,
+      to,
+      content,
       createAt: Date.now(),
     });
   });

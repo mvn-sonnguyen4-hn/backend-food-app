@@ -25,15 +25,15 @@ const UserSchema = mongoose.Schema({
   },
   phonenumber: {
     type: Number,
-    required: true,
+    default: '',
   },
   address: {
     type: String,
-    required: false,
+    default: '',
   },
   avatar_url:{
     type: String,
-    required: '',
+    default: '',
   },
   role: {
     type: Number,
