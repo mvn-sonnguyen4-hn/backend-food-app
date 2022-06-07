@@ -26,10 +26,12 @@ const user = require("./routes/user.route");
 const food = require("./routes/food.route");
 const category = require("./routes/category.route");
 const order = require("./routes/order.route");
+const message = require("./routes/message.route");
 app.use('/api/auth', user);
 app.use('/api/food', food);
 app.use('/api/category', category);
 app.use('/api/order', order);
+app.use('/api/message', message);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
@@ -41,3 +43,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log("App is running", PORT);
 });
+
+require('./socket/socket.js')
