@@ -1,6 +1,6 @@
 const io = require("socket.io")(8900, {
   cors: {
-    origin: "http://localhost:5000",
+    origin: "https://foodapp762.herokuapp.com/:5000",
   },
 });
 const roomSchema = require("../models/room.model");
