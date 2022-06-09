@@ -6,6 +6,13 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const multer = require('multer')
 const dotenv = require("dotenv");
+// route
+const user = require("./routes/user.route");
+const food = require("./routes/food.route");
+const category = require("./routes/category.route");
+const order = require("./routes/order.route");
+const message = require("./routes/message.route");
+
 dotenv.config();
 
 const db = require("./config/db");
@@ -21,12 +28,7 @@ const upload = multer({
   storage: multer.memoryStorage()
 })
 
-// route
-const user = require("./routes/user.route");
-const food = require("./routes/food.route");
-const category = require("./routes/category.route");
-const order = require("./routes/order.route");
-const message = require("./routes/message.route");
+
 app.use('/api/auth', user);
 app.use('/api/food', food);
 app.use('/api/category', category);

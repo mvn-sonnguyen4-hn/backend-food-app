@@ -7,7 +7,6 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).single("file");
 
 router.post("/register", userController.registerUser);
-
 router.post("/login", userController.loginUser);
 router.put("/update", isAuth, upload, userController.updateUser);
 
