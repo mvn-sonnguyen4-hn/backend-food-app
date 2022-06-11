@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
+const userSchema=require("../models/user.model");
 const MessageSchema = mongoose.Schema({
     from:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'User'
+        ref:userSchema
     },
     to:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'User'
+        ref:userSchema
     },
     content:{
         type:String,
@@ -19,4 +20,4 @@ const MessageSchema = mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     updateAt: { type: Date, default: Date.now },
 });
-module.exports = mongoose.model("messages", MessageSchema)
+module.exports = mongoose.model("Messages", MessageSchema);
