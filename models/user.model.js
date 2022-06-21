@@ -33,7 +33,7 @@ const UserSchema = mongoose.Schema({
   },
   avatar_url:{
     type: String,
-    default: '',
+    default: 'https://res.cloudinary.com/monstarlab777/image/upload/v1651456550/1-13_x7rcqz.png',
   },
   role: {
     type: Number,
