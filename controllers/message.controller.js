@@ -8,7 +8,7 @@ const getMessageByUserId = async (req, res) => {
     }).populate('messages.message');
     return res.status(200).json({ data: result.messages });
   } catch (err) {
-    res.status(500).json({ msg: "Err" });
+    res.status(500).json({ msg: new Error(err).message });
   }
 };
 

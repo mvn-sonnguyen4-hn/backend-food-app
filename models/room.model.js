@@ -1,17 +1,19 @@
 const mongoose = require("mongoose");
+const messageSchema=require("../models/message.model");
+const userSchema=require("../models/user.model");
 const RoomSchema = mongoose.Schema({
   messages: [
     {
       message: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Message",
+        ref: messageSchema,
       },
     },
   ],
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: userSchema,
     },
   ],
   status: {
