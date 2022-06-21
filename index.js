@@ -24,11 +24,6 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json({ limit: '50mb' }));
 
-const upload = multer({
-  storage: multer.memoryStorage()
-})
-
-
 app.use('/api/auth', user);
 app.use('/api/food', food);
 app.use('/api/category', category);
